@@ -248,14 +248,20 @@ interfaces:
           You also need to set the corresponding GPIOs to GPIO_MODE_UART_A.
           Refer to [interfaces](interfaces.md) to see which pins support UART_A.
           Changing this requires a reboot.
-      enable_uart_b:
-        type: bool
-        brief: Enables/disables UART_B.
-        doc: |
-          You also need to set the corresponding GPIOs to GPIO_MODE_UART_B.
-          Refer to [interfaces](interfaces.md) to see which pins support UART_B.
-          Changing this requires a reboot.
+      # enable_uart_b:
+      #   type: bool
+      #   brief: Enables/disables UART_B.
+      #   doc: |
+      #     You also need to set the corresponding GPIOs to GPIO_MODE_UART_B.
+      #     Refer to [interfaces](interfaces.md) to see which pins support UART_B.
+      #     Changing this requires a reboot.
       enable_uart_c: {type: bool, doc: Not supported on ODrive v3.x.}
+      enable_amt:
+        type: bool
+        brief: Enables/disables AMT21 encoder support.
+        doc: |
+          You also need to set the corresponding GPIO3 and GPIO4 to GPIO_MODE_AMT.
+          Changing this requires a reboot.
       uart_a_baudrate:
         type: uint32
         unit: baud/s
@@ -297,11 +303,11 @@ interfaces:
           For more information refer to Section 30.3.4 and Table 142 (the column with f_PCLK = 42 MHz) in the
           `STM datasheet <https://www.st.com/content/ccc/resource/technical/document/reference_manual/3d/6d/5a/66/b4/99/40/d4/DM00031020.pdf/files/DM00031020.pdf/jcr:content/translations/en.DM00031020.pdf>`__.
 
-      uart_b_baudrate:
-        type: uint32
-        unit: baud/s
-        brief: Defines the baudrate used on the UART interface.
-        doc: See `uart_a_baudrate` for details.
+      # uart_b_baudrate:
+      #   type: uint32
+      #   unit: baud/s
+      #   brief: Defines the baudrate used on the UART interface.
+      #   doc: See `uart_a_baudrate` for details.
       uart_c_baudrate: {type: uint32, doc: Not supported on ODrive v3.x.}
       enable_can_a:
         type: bool
@@ -1235,6 +1241,7 @@ interfaces:
           ABS_SPI_TIMEOUT:
           ABS_SPI_COM_FAIL:
           ABS_SPI_NOT_READY:
+          ABS_RS485_FAIL:
           HALL_NOT_CALIBRATED_YET:
       is_ready: readonly bool
       index_found: readonly bool
@@ -1486,6 +1493,7 @@ valuetypes:
       ENC1: {doc: The pin is used by quadrature encoder 1.}
       ENC2: {doc: This mode is not supported on ODrive v3.x.}
       MECH_BRAKE: {doc: This is to support external mechanical brakes.}
+      AMT: {doc: This is to support Amt21 encoders.}
       STATUS: {doc: The pin is used for status output (see `config.error_gpio_pin`)}
 
   ODrive.StreamProtocolType:
@@ -1589,6 +1597,9 @@ valuetypes:
       SPI_ABS_MA732:
         value: 0x104
         doc: MagAlpha MA732 magnetic encoder
+      RS485_ABS_CUI:
+        value: 0x105
+        doc: Compatible with CUI AMT21xx
 
   ODrive.Controller.ControlMode:
     values:

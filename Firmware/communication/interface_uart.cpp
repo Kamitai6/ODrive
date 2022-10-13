@@ -200,7 +200,9 @@ void uart_poll() {
 }
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef* huart) {
-    if (huart == huart_) {
+    if (huart->Instance == USART2) {
+        HAL_GPIO_WritePin(GPIO_7_GPIO_Port, GPIO_7_Pin, GPIO_PIN_RESET);
+    } else {
         osMessagePut(uart_event_queue, 2, 0);
     }
 }

@@ -19,7 +19,8 @@ GPIO_MODE_ENC0                           = 11
 GPIO_MODE_ENC1                           = 12
 GPIO_MODE_ENC2                           = 13
 GPIO_MODE_MECH_BRAKE                     = 14
-GPIO_MODE_STATUS                         = 15
+GPIO_MODE_AMT                            = 15
+GPIO_MODE_STATUS                         = 16
 
 # ODrive.StreamProtocolType
 STREAM_PROTOCOL_TYPE_FIBRE               = 0
@@ -54,6 +55,7 @@ ENCODER_MODE_SPI_ABS_AMS                 = 257
 ENCODER_MODE_SPI_ABS_AEAT                = 258
 ENCODER_MODE_SPI_ABS_RLS                 = 259
 ENCODER_MODE_SPI_ABS_MA732               = 260
+ENCODER_MODE_RS485_ABS_CUI               = 261
 
 # ODrive.Controller.ControlMode
 CONTROL_MODE_VOLTAGE_CONTROL             = 0
@@ -159,7 +161,8 @@ ENCODER_ERROR_INDEX_NOT_FOUND_YET        = 0x00000020
 ENCODER_ERROR_ABS_SPI_TIMEOUT            = 0x00000040
 ENCODER_ERROR_ABS_SPI_COM_FAIL           = 0x00000080
 ENCODER_ERROR_ABS_SPI_NOT_READY          = 0x00000100
-ENCODER_ERROR_HALL_NOT_CALIBRATED_YET    = 0x00000200
+ENCODER_ERROR_ABS_RS485_FAIL             = 0x00000200
+ENCODER_ERROR_HALL_NOT_CALIBRATED_YET    = 0x00000400
 
 # ODrive.SensorlessEstimator.Error
 SENSORLESS_ESTIMATOR_ERROR_NONE          = 0x00000000

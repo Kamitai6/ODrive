@@ -232,14 +232,15 @@ std::array<GpioFunction, 3> alternate_functions[GPIO_COUNT] = {
 #if HW_VERSION_MINOR >= 3
     /* GPIO1: */ {{{ODrive::GPIO_MODE_UART_A, GPIO_AF8_UART4}, {ODrive::GPIO_MODE_PWM, GPIO_AF2_TIM5}}},
     /* GPIO2: */ {{{ODrive::GPIO_MODE_UART_A, GPIO_AF8_UART4}, {ODrive::GPIO_MODE_PWM, GPIO_AF2_TIM5}}},
-    /* GPIO3: */ {{{ODrive::GPIO_MODE_UART_B, GPIO_AF7_USART2}, {ODrive::GPIO_MODE_PWM, GPIO_AF2_TIM5}}},
+    // /* GPIO3: */ {{{ODrive::GPIO_MODE_UART_B, GPIO_AF7_USART2}, {ODrive::GPIO_MODE_PWM, GPIO_AF2_TIM5}}},
+    /* GPIO3: */ {{{ODrive::GPIO_MODE_AMT, GPIO_AF7_USART2}, {ODrive::GPIO_MODE_PWM, GPIO_AF2_TIM5}}},
 #else
     /* GPIO1: */ {{}},
     /* GPIO2: */ {{}},
     /* GPIO3: */ {{}},
 #endif
-
-    /* GPIO4: */ {{{ODrive::GPIO_MODE_UART_B, GPIO_AF7_USART2}, {ODrive::GPIO_MODE_PWM, GPIO_AF2_TIM5}}},
+    // /* GPIO4: */ {{{ODrive::GPIO_MODE_UART_B, GPIO_AF7_USART2}, {ODrive::GPIO_MODE_PWM, GPIO_AF2_TIM5}}},
+    /* GPIO4: */ {{{ODrive::GPIO_MODE_AMT, GPIO_AF7_USART2}, {ODrive::GPIO_MODE_PWM, GPIO_AF2_TIM5}}},
     /* GPIO5: */ {{}},
     /* GPIO6: */ {{}},
     /* GPIO7: */ {{}},
@@ -332,10 +333,10 @@ bool board_init() {
         MX_UART4_Init();
     }
 
-    if (odrv.config_.enable_uart_b) {
-        uart_b->Init.BaudRate = odrv.config_.uart_b_baudrate;
-        MX_USART2_UART_Init();
-    }
+    // if (odrv.config_.enable_uart_b) {
+    //     uart_b->Init.BaudRate = odrv.config_.uart_b_baudrate;
+    //     MX_USART2_UART_Init();
+    // }
 
     if (odrv.config_.enable_i2c_a) {
         // Set up the direction GPIO as input

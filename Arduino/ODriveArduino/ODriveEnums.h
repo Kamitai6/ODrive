@@ -24,7 +24,8 @@ enum GpioMode {
     GPIO_MODE_ENC1                           = 12,
     GPIO_MODE_ENC2                           = 13,
     GPIO_MODE_MECH_BRAKE                     = 14,
-    GPIO_MODE_STATUS                         = 15,
+    GPIO_MODE_AMT                            = 15,
+    GPIO_MODE_STATUS                         = 16,
 };
 
 // ODrive.StreamProtocolType
@@ -67,6 +68,7 @@ enum EncoderMode {
     ENCODER_MODE_SPI_ABS_AEAT                = 258,
     ENCODER_MODE_SPI_ABS_RLS                 = 259,
     ENCODER_MODE_SPI_ABS_MA732               = 260,
+    ENCODER_MODE_RS485_ABS_CUI               = 261,
 };
 
 // ODrive.Controller.ControlMode
@@ -190,7 +192,8 @@ enum EncoderError {
     ENCODER_ERROR_ABS_SPI_TIMEOUT            = 0x00000040,
     ENCODER_ERROR_ABS_SPI_COM_FAIL           = 0x00000080,
     ENCODER_ERROR_ABS_SPI_NOT_READY          = 0x00000100,
-    ENCODER_ERROR_HALL_NOT_CALIBRATED_YET    = 0x00000200,
+    ENCODER_ERROR_ABS_RS485_FAIL             = 0x00000200,
+    ENCODER_ERROR_HALL_NOT_CALIBRATED_YET    = 0x00000400,
 };
 
 // ODrive.SensorlessEstimator.Error

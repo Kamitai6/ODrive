@@ -534,7 +534,10 @@ static void rtos_main(void*) {
 
     // Set up the CS pins for absolute encoders (TODO: move to GPIO init switch statement)
     for(auto& axis : axes){
-        if(axis.encoder_.config_.mode & Encoder::MODE_FLAG_ABS){
+        if (axis.encoder_.config_.mode & Encoder::MODE_RS485_ABS_CUI){
+            axis.encoder_.abs_rs485_en_pin_init();
+        }
+        else if(axis.encoder_.config_.mode & Encoder::MODE_FLAG_ABS){
             axis.encoder_.abs_spi_cs_pin_init();
         }
     }
@@ -677,7 +680,7 @@ extern "C" int main(void) {
 
     odrv.misconfigured_ = odrv.misconfigured_
             || (odrv.config_.enable_uart_a && !uart_a)
-            || (odrv.config_.enable_uart_b && !uart_b)
+            // || (odrv.config_.enable_uart_b && !uart_b)
             || (odrv.config_.enable_uart_c && !uart_c);
 
     // Init board-specific peripherals
@@ -745,11 +748,19 @@ extern "C" int main(void) {
                     odrv.misconfigured_ = true;
                 }
             } break;
-            case ODriveIntf::GPIO_MODE_UART_B: {
+            // case ODriveIntf::GPIO_MODE_UART_B: {
+            //     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+            //     GPIO_InitStruct.Pull = (i == 0) ? GPIO_PULLDOWN : GPIO_PULLUP; // this is probably swapped but imitates old behavior
+            //     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+            //     if (!odrv.config_.enable_uart_b) {
+            //         odrv.misconfigured_ = true;
+            //     }
+            // } break;
+            case ODriveIntf::GPIO_MODE_AMT: {
                 GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
                 GPIO_InitStruct.Pull = (i == 0) ? GPIO_PULLDOWN : GPIO_PULLUP; // this is probably swapped but imitates old behavior
                 GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-                if (!odrv.config_.enable_uart_b) {
+                if (!odrv.config_.enable_amt) {
                     odrv.misconfigured_ = true;
                 }
             } break;

@@ -57,9 +57,14 @@ void Encoder::setup() {
         abs_spi_dma_tx_[0] = 0x0000;
     }
 
-    if(mode_ & MODE_FLAG_ABS){
+    if(mode_ == MODE_RS485_ABS_CUI){
+        abs_rs485_en_pin_init();
+    }
+    else if(mode_ & MODE_FLAG_ABS && mode_){
         abs_spi_cs_pin_init();
+    }
 
+    if(mode_ & MODE_FLAG_ABS && mode_){
         if (axis_->controller_.config_.anticogging.pre_calibrated) {
             axis_->controller_.anticogging_valid_ = true;
         }
@@ -499,6 +504,11 @@ void Encoder::sample_now() {
             // Do nothing
         } break;
 
+        case MODE_RS485_ABS_CUI:
+        {
+            abs_rs485_start_transaction();
+        } break;
+
         default: {
            set_error(ERROR_UNSUPPORTED_ENCODER_MODE);
         } break;
@@ -540,6 +550,16 @@ bool Encoder::abs_spi_start_transaction() {
         } else {
             return false;
         }
+    }
+    return true;
+}
+
+bool Encoder::abs_rs485_start_transaction() {
+    if (mode_ == MODE_RS485_ABS_CUI) {
+        HAL_GPIO_WritePin(GPIO_7_GPIO_Port, GPIO_7_Pin, GPIO_PIN_SET);
+        HAL_UART_Transmit_IT(&huart2, &abs_rs485_dma_tx_, 1);
+        // HAL_UART_Transmit_DMA(&huart2, &abs_rs485_dma_tx_, 1);
+        HAL_UART_Receive_DMA(&huart2, abs_rs485_dma_rx_, 2);
     }
     return true;
 }
@@ -611,6 +631,27 @@ done:
     Stm32SpiArbiter::release_task(&spi_task_);
 }
 
+void Encoder::abs_rs485_cb() {
+    uint16_t pos;
+
+    switch (mode_) {
+        case MODE_RS485_ABS_CUI: {
+            pos = ((abs_rs485_dma_rx_[1] & 0x3F) << 8) + abs_rs485_dma_rx_[0];
+        } break;
+
+        default: {
+            set_error(ERROR_UNSUPPORTED_ENCODER_MODE);
+            return;
+        } break;
+    }
+
+    pos_abs_ = pos;
+    abs_rs485_pos_updated_ = true;
+    if (config_.pre_calibrated) {
+        is_ready_ = true;
+    }
+}
+
 void Encoder::abs_spi_cs_pin_init(){
     // Decode and init cs pin
 #if HW_VERSION_MAJOR == 4
@@ -624,6 +665,12 @@ void Encoder::abs_spi_cs_pin_init(){
 
     // Write pin high
     abs_spi_cs_gpio_.write(true);
+}
+
+void Encoder::abs_rs485_en_pin_init() {
+    abs_rs485_en_gpio_ = get_gpio(7);
+    abs_rs485_en_gpio_.config(GPIO_MODE_OUTPUT_PP, GPIO_PULLUP);
+    abs_rs485_en_gpio_.write(false);
 }
 
 // Note that this may return counts +1 or -1 without any wrapping
@@ -752,6 +799,15 @@ bool Encoder::update() {
                 delta_enc -= config_.cpr;
             }
 
+        }break;
+        case MODE_RS485_ABS_CUI: {
+            // set_error(ERROR_ABS_RS485_FAIL);
+            abs_rs485_pos_updated_ = false;
+            delta_enc = pos_abs_latched - count_in_cpr_; //LATCH
+            delta_enc = mod(delta_enc, config_.cpr);
+            if (delta_enc > config_.cpr/2) {
+                delta_enc -= config_.cpr;
+            }
         }break;
         default: {
             set_error(ERROR_UNSUPPORTED_ENCODER_MODE);

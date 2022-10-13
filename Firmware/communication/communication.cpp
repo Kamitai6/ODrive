@@ -39,14 +39,14 @@ void init_communication(void) {
     //printf("hi!\r\n");
 
     // Dual UART operation not supported yet
-    if (odrv.config_.enable_uart_a && odrv.config_.enable_uart_b) {
+    if (odrv.config_.enable_uart_a/* && odrv.config_.enable_uart_b*/) {
         odrv.misconfigured_ = true;
     }
 
     if (odrv.config_.enable_uart_a && uart_a) {
         start_uart_server(uart_a);
-    } else if (odrv.config_.enable_uart_b && uart_b) {
-        start_uart_server(uart_b);
+    // } else if (odrv.config_.enable_uart_b && uart_b) {
+    //     start_uart_server(uart_b);
     }
 
     start_usb_server();

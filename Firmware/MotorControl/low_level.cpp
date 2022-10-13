@@ -409,3 +409,9 @@ void start_analog_thread() {
     osThreadDef(analog_thread_def, analog_polling_thread, osPriorityLow, 0, stack_size_analog_thread / sizeof(StackType_t));
     analog_thread = osThreadCreate(osThread(analog_thread_def), NULL);
 }
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart) {
+    if (huart->Instance == USART2) {
+        axes[0].encoder_.abs_rs485_cb();
+    }
+}
