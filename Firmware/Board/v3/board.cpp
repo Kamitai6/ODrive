@@ -338,6 +338,10 @@ bool board_init() {
     //     MX_USART2_UART_Init();
     // }
 
+    if (odrv.config_.enable_amt) {
+        MX_USART2_UART_Init();
+    }
+
     if (odrv.config_.enable_i2c_a) {
         // Set up the direction GPIO as input
         get_gpio(3).config(GPIO_MODE_INPUT, GPIO_PULLUP);
